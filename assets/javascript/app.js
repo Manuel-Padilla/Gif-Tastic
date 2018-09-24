@@ -10,14 +10,14 @@ $(document).ready(function() {
       var show = $(this).attr("tvshow-name");
       var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + show + "&api_key=JFdCPg2FwsteVhDbA9vZyYEf2m7DISkV&limit=9";
 
-      //AJAX is used to retrieve information on the button that is clicked
+      //AJAX is used here to retrieve information on the button that is clicked
 
       $.ajax({
           url: queryURL,
           method: "GET"
       }).then(function(response) {
 
-          // tvShows is set to empty so that a new selection can append to empty div
+          // shows is set to empty so that a new selection can append to empty div
 
           $("#show").empty();
 
@@ -52,7 +52,7 @@ $(document).ready(function() {
               $("#show").append(showDiv);
           }
 
-          //on click of the still gif image, gif will play. It will pause when clicked again.
+          //click the still gif image and it will play. Will pause when clicked again.
 
           $(".gif").on("click", function() {
               var state = $(this).attr("data-state");
@@ -93,7 +93,7 @@ $(document).ready(function() {
       }
   }
 
-  // this on click event will add sport buttons when button is clicked
+  // this on click event will add show button when button is clicked
 
   $("#addShow").on("click", function(event) {
       event.preventDefault();
