@@ -1,115 +1,115 @@
-$( document ).ready(function() {
-  
-  //set up tv shows array to show at the start of the page
-  
-  var topics = ["NewsRadio", "Seinfeld", "King of Queens", "The Office", "MadTv", "Frasier", "Saturday Night Live", "The Big Bang Theory", "Roseanne"];
+$(document).ready(function() {
+
+  //set up a tv shows array to display at the start of the page
+
+  var topics = ["NewsRadio", "Seinfeld", "Everybody Loves Raymond", "The Office", "Friends", "Mama's Family", "In Living Color", "Curb Your Enthusiasm", "Roseanne"];
 
   //GET attributes and display content by using Giphy API and JSON through a function 
 
   function displayInfo() {
-    var show = $(this).attr("show-name");
-    var queryURL = "https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC";
+      var show = $(this).attr("tvshow-name");
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + show + "&api_key=JFdCPg2FwsteVhDbA9vZyYEf2m7DISkV&limit=9";
 
-    //use AJAX to GET information on tv show button clicked
+      //AJAX is used to retrieve information on the button that is clicked
 
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).done(function(response) {
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+      }).then(function(response) {
 
-      //empty tv shows div so new selection appends to empty div - do not want any previous searches listed
+          // tvShows is set to empty so that a new selection can append to empty div
 
-      $("#tvshows").empty();
+          $("#show").empty();
 
-      var results = response.data;
+          var results = response.data;
 
-      //for loop is added to grab the rating information from Giphy and assigned gif for button clicked into its own div to keep information together
+          //for loop is added to grab the rating information from GIPHY and assigned a gif for that specific button
 
-      for (var i = 0; i < results.length; i++) {
-        var tvShowDiv = $("<div class='userTvShow'>");
+          for (var i = 0; i < results.length; i++) {
+              var showDiv = $("<div class='userShow'>");
 
-        //variable is created for rating 
-        
-        var rating = results[i].rating;
-        var pRate = $("<p>").text("Rating: " + rating);
+              //variable is created for rating 
 
-        //make variables for still url and animated url for clean build
+              var rating = results[i].rating;
+              var pRate = $("<p>").text("Rating: " + rating);
 
-        var urlStill = results[i].images.fixed_height_still.url;
-        var urlPlay = results[i].images.fixed_height.url;
+              //make variables for still and animated url
 
-        //gif needs still source to load and data attributes to store the still and animated gifs for pausing function
+              var urlStill = results[i].images.fixed_height_still.url;
+              var urlPlay = results[i].images.fixed_height.url;
 
-        var gif = $("<img>").addClass("gif").attr("src", urlStill).attr("data-still", urlStill).attr("data-animate", urlPlay).attr("data-state", "still");
+              //gif needs still source to load and data attributes to store the still and animated gifs for pausing function
 
-        //append the gif and rating to the new div created during for loop
+              var gif = $("<img>").addClass("gif").attr("src", urlStill).attr("data-still", urlStill).attr("data-animate", urlPlay).attr("data-state", "still");
 
-        tvShowDiv.append(gif);
-        tvShowDiv.append(pRate);
+              //append the gif and rating to the new div created during for loop
 
-        //append all for loop created divs to the DOM
+              showDiv.append(gif);
+              showDiv.append(pRate);
 
-        $("#tvshows").append(tvShowDiv);
-      }
+              //append all for loop created divs to the DOM
 
-      //on click of the still gif image, gif will play. It will pause when clicked again.
+              $("#show").append(showDiv);
+          }
 
-      $(".gif").on("click", function() {
-        var state = $(this).attr("data-state");
+          //on click of the still gif image, gif will play. It will pause when clicked again.
 
-        if (state === "still") {
-          $(this).attr("src", $(this).attr("data-animate"));
-          $(this).attr("data-state", "animate");
-        } else {
-          $(this).attr("src", $(this).attr("data-still"));
-          $(this).attr("data-state", "still");
-        }
+          $(".gif").on("click", function() {
+              var state = $(this).attr("data-state");
 
+              if (state === "still") {
+                  $(this).attr("src", $(this).attr("data-animate"));
+                  $(this).attr("data-state", "animate");
+              } else {
+                  $(this).attr("src", $(this).attr("data-still"));
+                  $(this).attr("data-state", "still");
+              }
+
+          });
       });
-    });
-    
+
   }
-  
-  //create buttons out of array indexes - gets information from JSON
+
+  //function to create buttons out of array indexes
 
   function renderButtons() {
 
-    //delete original array of buttons everytime renders so they do not keep repeating
+      //deletes original array of buttons everytime rendered
 
-    $("#tvshowButtons").empty();
+      $("#tvshowButtons").empty();
 
-    //loop through array
+      //loop through array
 
-    for (var i = 0; i < topics.length; i++) {
+      for (var i = 0; i < topics.length; i++) {
 
-      var tvShowRender = $("<button>");
+          var tvshowRender = $("<button>");
 
-      //add class and attribute of name so display function knows what to GET
+          //add class and attribute of name so display function knows what to GET
 
-      tvShowRender.addClass("show");
-      tvShowRender.attr("show-name", topics[i]);
-      tvShowRender.text(topics[i]);
-      $("#tvshowButtons").append(tvShowRender);
-    }
+          tvshowRender.addClass("show");
+          tvshowRender.attr("tvshow-name", topics[i]);
+          tvshowRender.text(topics[i]);
+          $("#tvshowButtons").append(tvshowRender);
+      }
   }
 
-  //on click event to add an additional tv show button when submitted - push input to array.
+  // this on click event will add sport buttons when button is clicked
 
-  $("#addTvShow").on("click", function(event){
-    event.preventDefault();
-    var show = $("#tvshow-input").val().trim();
+  $("#addShow").on("click", function(event) {
+      event.preventDefault();
+      var show = $("#tvshow-input").val().trim();
 
-    //push input to original topics array and then rerun render of buttons to show newly added button
-    topics.push(show);
-    $("#tvshow-input").val(" ");
-    renderButtons();
+      //push input to original topics array and then rerun render of buttons to show newly added button
+      topics.push(show);
+          $("#tvshow-input").val(" ");
+      renderButtons();
   });
+
 
   //on click entire document to cover all elements named "show" and run display function
   $(document).on("click", ".show", displayInfo);
 
   //run function to display all buttons on startup
   renderButtons();
-  
-});
 
+});
